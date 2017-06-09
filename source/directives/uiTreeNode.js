@@ -728,17 +728,36 @@
              */
             //This is outside of bindDragMoveEvents because of the potential for a delay setting.
             bindDragStartEvents = function () {
-              element.bind('touchstart mousedown', function (e) {
-                //Don't call drag delay if no delay was specified.
-                if (scope.dragDelay > 0) {
-                  dragDelay.exec(function () {
-                    dragStartEvent(e);
-                  }, scope.dragDelay);
-                } else {
-                  dragStartEvent(e);
-                }
+              var isDraggingEvent = null;
+
+              element.bind('touchstart mousedown', function ( e ) {
+                setTimeout(function() {
+
+                  element.bind('touchmove mousemove', function( moveEvent ) {
+                    isDraggingEvent = moveEvent;
+
+                    //Don't call drag delay if no delay was specified.
+                    if (scope.dragDelay > 0) {
+                      dragDelay.exec(function () {
+                        dragStartEvent(e);
+                      }, scope.dragDelay);
+                    } else {
+                      dragStartEvent(e);
+                    }
+                  });
+
+                  element.bind('mouseleave', function() {
+                    element.unbind('touchmove mousemove');
+                  });
+
+                }, 200);
               });
+
               element.bind('touchend touchcancel mouseup', function () {
+
+                element.unbind('touchmove mousemove');
+                element.unbind('mouseleave');
+
                 if (scope.dragDelay > 0) {
                   dragDelay.cancel();
                 }

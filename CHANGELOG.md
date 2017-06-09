@@ -1,3 +1,8 @@
+#2.22.6
+
+* Drag now occurs when cursor start moving
+* Fix click action
+
 #2.22.5
 
 * Move postinstall hook to pretest [#907](https://github.com/angular-ui-tree/angular-ui-tree/issues/907)
